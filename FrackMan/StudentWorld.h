@@ -13,6 +13,7 @@ class StudentWorld : public GameWorld
 public:
     StudentWorld(std::string assetDir);
     virtual ~StudentWorld(){
+        cleanUp();
     }
     int randInt(int min, int max);
     int min(int x, int y);
@@ -24,6 +25,7 @@ public:
 	
     // Add an actor to the world.
     void addActor(Actor* a);
+    void setDisplayText();
     
     // Clear a 4x4 region of dirt.
     void clearDirt(int x, int y);
@@ -56,6 +58,10 @@ public:
     void giveFrackManWater();
     
     void giveFrackManGold();
+    void shootSquirt(Actor* a);
+    void foundOil();
+    
+    void frackmanDropsGold(FrackMan* a);
     
     // Is the Actor a facing toward the FrackMan?
     bool facingTowardFrackMan(Actor* a) const;
@@ -75,20 +81,22 @@ public:
     // makes to approach the FrackMan.
     
     GraphObject::Direction determineFirstMoveToFrackMan(int x, int y);
-    
+    bool awayFromDirt(int x, int y) const;
     void removeDirt(int x, int y);
-
-    
+    void protesterLeave(Protester * a);
+    bool canProtesterLeaveTo(Protester* a, int x, int y, int h);
     bool hasDirt(int x, int y){
         if (x >= 0 && x < VIEW_WIDTH && y >= 0 && y < VIEW_HEIGHT && m_dirt[x][y] != nullptr)
             return true;
         return false;
     }
 private:
-    void addActivatingObject(int &x, int &y, bool isBoulder);
+    int oilLeft;
+    void addActivatingObject(char type);
     void changeActorLocationValid(int x, int y);
+    void solveHeatMap();
     Dirt *** m_dirt;
-    int  actorLocations [60][56];
+    int heatMap[64][64];
     FrackMan * m_frackman;
     std::vector<Actor *> m_actors;
 };
